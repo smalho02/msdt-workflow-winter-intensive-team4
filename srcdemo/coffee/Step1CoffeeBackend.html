@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>Step 1: Coffee Backend</title>
+</head>
+<body>
+<h1>Step 1: Coffee Backend</h1>
+
+<p>Our Simple Coffee Counter application has two roles: an OrderTaker and a Barista.  
+There is also a backend processor which handles automated tasks and/or communication
+amongst the frontend applications.</p>
+
+<p>Your job will be to edit the files defining all three parts of the system in turn,
+starting with the backend.  Here is what you need to do edit the backend:</p>
+
+<h2> Make sure that you use only alphabetic characters in all your names!!!</h2>
+
+
+<h2>Modify the <tt>wire</tt> method</h2>
+
+<p>Look in the code for a method that starts:</p>
+<p><tt>    def wire(self): </tt></p>
+
+<p>The wire method is where we tell MWP which tasks to keep track of.
+Wire does not take any parameters other than self, but you will need to 
+add a line of code for each task in the process that MWP needs to keep
+track of.</p>
+        
+<p>For Lab 5 there are two tasks we need to 'register':  taking an order
+and preparing the drink.  To register a task, you will need to add a line of code that looks
+like this:</p>
+        
+<p><tt>self.register_result_listener("RoleName", "TaskName", self.method_name)</tt></p>
+        
+<p>In this line of code: <tt>self.register_result_listener</tt> 
+is the name of the function being called.
+(The actual code for this can be found in a file called backend.py which
+you don't need to change or even look at, since it is part of the MWP
+system.  If you look above, you will see that this code is imported 
+at the top of this file.)</p>
+        
+<p>The first parameter <tt>"RoleName"</tt> should be replaced with the name of the 
+role (aka person aka job) that carries out this task.  For example, "Barista"
+if this is a task that the Barista does.  the <tt>RoleName</tt> should be all letters
+and numbers with NO SPACES.  So if the task were being carried out by a
+computer programmer you would use a rolename like <tt>"ComputerProgrammer"</tt> (or <tt>"Programmer"</tt>).</p>
+        
+<p><tt>"TaskName"</tt> should be the name you give to this particular step in the process.
+Again, this name should have no spaces in it.</p>
+        
+<p>Note that you are free to use whatever names you like for the role and the
+task, but you need to be consistent throughout the MWP application.
+In particular, when you define your user interface for a given task (e.g.
+in <tt>BaristaApplication.py</tt> and <tt>OrderTakerApplication.py</tt>) you will need to 
+register those tasks using the same role and task names you use here.</p>
+        
+<p>Finally, <tt>self.method_name</tt> should be the name of the method you will use (below)
+to take action after this task has been carried out.  Typically the action
+will be to assign the next task in the process.  Note that the method name
+is prefixed by <tt>'self.'</tt>tt> and that there are no quotes around <tt>self.method_name</tt>.</p>
+        
+<p>For Lab 5 we have already set up the two methods you will need here:</p>
+<ul>        
+<li><tt>        self.drink_order_taken</tt></li>
+<li><tt>        self.drink_prepared</tt></li>
+</ul>
+<p> so you will use one of these in each line of code. </p>
+
+<h2>Modify the <tt>drink_order_taken</tt> method</h2>
+
+<p>Look in the code for a method that starts:</p>
+<p><tt>    def drink_order_taken(self, results): </tt></p>
+
+<p>this method (i.e. function) gets called to update data and schedule any tasks
+necessary after a drink order is taken.  Specifically, this function
+will set the status to "complete" on the "take drink order" task
+and assigns the preparation of this drink to the Barista.</p>
+        
+<p>You don't call this function yourself.  MWP will call the function
+whenever there is a new row in the Google spreadsheet for a drink order.
+you tell MWP to call this particular function for this particular
+event by adding a line of code in the <tt>wire</tt> method above.</p>
+        
+<p>When drink_order_taken gets called, the results parameter will be
+set by WPM to contain a list of "results" from any recent
+drink orders that need to be dealt with.  Each result "object"
+contains all the data associated with that particular drink order.</p>
+        
+<p>We already include the code to update the status
+of the &quot;take drink order&quot; task.  We also include the line of code
+which adds the new task to the workflow system.  What is NOT included
+below is the code to create the new task to be added.  you need to 
+add a line of code that looks like this:</p>
+
+<p><tt>task = Task.construct_from_result(result, "RoleName", "TaskName")</tt></p>
+        
+<p>In this code, <tt>RoleName</tt> and <tt>TaskName</tt> have the same meaning as in the 
+code you added to the <tt>wire()</tt> method above.
+
+<h2>Modify the <tt>drink_prepared</tt> method</h2>
+
+<p>Look in the code for a method that starts:</p>
+<p><tt>    def drink_prepared(self, results): </tt></p>
+
+<p>This method is similar to <tt>drink_order_taken</tt>, except that it is called
+after the barista has prepared the drink.  in our very simple workflow
+this is the last step in the process, which means that this method has
+a very simple job:  it just needs to mark the status of the barista's
+task (stored in the results variable) as Complete.  You do not need
+to create a new task and you do not need to add a task to the workflow.</p>
+
+<p>We have not included the code for this method below.  (Note the "pass" statement
+below tells python to "pass" on doing anything at all in this method.</p>
+
+<p>To complete the code for this method you will want to remove the pass
+statement and replace it with some of the code from drink__order_taken.
+Try copying all the code and deleting whatever you don't need here.</p>
+
+</body>
+</html>

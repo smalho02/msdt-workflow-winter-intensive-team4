@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>Step 2: Order Taker Application</title>
+</head>
+<body>
+<h1>Step 2: Order Taker Application</h1>
+
+<p> An application will always include the method <tt>__init__</tt> and at least one
+method to define a form that the user of this application will use to complete a given task.
+There could be several different forms for different tasks, but for this simple workflow there
+is only one form and thus one method:  <tt>take_drink_order_form</tt> creator.
+</p>
+
+<h2>Modify the <tt>__init__</tt> method</h2>
+
+<p>The <tt>__init__</tt> method is called automatically when we run the code in this file and 
+consists of two lines of code, both of which you will need to edit.
+        
+<p>The first line of code tells WMP which workflow and role this application is associated with.
+The second line of code tells WMP what kind of user interface is needed and where to
+find the code to build that interface. We will edit each of these lines of code in turn:</p>
+
+<h3>Editing the First Line of Code</h3>
+
+<p>The first line of code actually calls an <tt>__init__</tt> method from another part of the WMP system,
+which does the actual work of recording the workflow name and rolename for this application.  
+To fix this line of code you need to replace <tt>"RoleName"</tt> with the actual
+name you gave your workflow in <tt>CoffeeBackend</tt> and the actual name you gave the order taker
+role (also in <tt>CoffeeBackend</tt>).  That way WMP knows where this application (user interface)
+fits into the workflow you have defined.  See the <tt>__init__</tt> and <tt>wire</tt> methods in <tt>CoffeeBackend</tt>
+for more explanation (and to remind yourself of the exact workflow name and role name you
+have chosen).
+
+<h3>Editing the Second Line of Code</h3>
+
+<p>To fix the second line of code you need to replace <tt>"TaskName"</tt> with the actual name
+you gave this task in <tt>CoffeeBackend</tt>.  Again, this is so WMP knows not only which workflow
+and which role, but which task is associated with this application.</p>
+
+<p>There are a couple of other important parts of this second line which
+we have already taken care of, but which are worth taking note of:</p>
+
+<ul>
+<li>The method called in this line of code is <tt>register_source_step</tt>.  This is one of three
+"flavors" of method which can be used when initializing a user interface.  A <i>source</i> step
+is a user interface that is used to initiate a workflow.  For example, the first step
+in the coffee workflow is taking the drink order.  A <i>sink</i> step refers to a step that is 
+the last step in a workflow.  For example, in our simple workflow, preparing the drink
+is actually the last step and so BaristaApplication will use <tt>register_sink_step</tt>.  When you get
+the application running you will notice that the user interface for a sink step is actually
+different than for a source step because it needs to show you a list of open orders.  That is why
+a different method is used.  Finally, a <tt>transition</tt> step is an application that shows up
+somewhere in the middle of a workflow.  (The coffee workflow is so simple that it has no
+transition steps.)</li>
+
+<li>The second parameter of <tt>register_source_step</tt> specifies which method contains the
+code to build the user interface for this application.  In this case the method
+is <tt>take_drink_order_form_creator</tt>, which, as its name suggests, handles the creation
+of the drink order form (i.e. the user interface).</li>
+</ul>
+
+<h2>Modify the <tt>take_drink_order_form_creator</tt> method</h2>
+
+<p>The <tt>take_drink_order_form_creator</tt> method method does the actual work of building the user interface.
+Unlike earlier labs where we use print and raw_input to communicate with the user,
+here we are going to have a graphical user interface (GUI) which includes fields
+the user can fill in, static text, and possibly other fancy things like buttons
+and drop down lists.  WMP gives you a kind of "user interface language" which you
+can use to tell it which of these elements to include in the user interface.</p>
+
+<p>For now we will focus on just two of the user interface elements:  fields and static labels.  (the complete
+set can be found in frontend/form.py and documentation and in the API documentation). All user interface elements are displayed on the form in the order in which they are added</p>
+
+<p>The user interface itself is referred to as a form, a special object
+created by WMP.  interface elements are added to a form by issuing commands
+that look like this:</p>
+
+<p><tt>form.add_static_label(parameters)
+form.add_field(parameters)</tt></p>
+
+<p>and so on</p>
+
+<h3>Static Labels</h3>
+
+<p>A "static label" element is any fixed text you may want to add to the form.  typically
+this is used to add instructions to the user.  To add a static label, include a line of code that looks like this:</p>
+
+<p><tt>form.add_static_label('text you want to include')</tt></p>
+
+<p>For Lab 5:  a static label has been included below but the text is not very
+relevant to the user.  Please modify the text to something more appropriate
+to this application.  Feel free to add any additional static labels you think
+are useful as you build this form.</p>
+
+<h3>Fields</h3>
+
+<p>A field is any kind of information you want to collect from the user, including
+text, numbers, dates, and so on.  WMP takes care of adding the appropriate elements
+to the user interface and handling user actions like clicking into and out of
+various fields on the form.  The exact code to use for a field depends on the kind of field.  For example, to
+add a field for a bit of text like a name (or a drink description) add the following:</p>
+
+<p><tt>form.add_field(Type.SHORTSTRING, "FieldName")</tt></p>
+
+<p><tt>Type.SHORTSTRING</tt> is used to specify that this is a text field (yes, there is a <tt>LONGSTRING</tt>
+which we will get to in a moment).  The second parameter is the name WMP will use for this field.  
+You should not use any spaces or special characters in this name.  For example, you might have a field
+name like <tt>'FirstName'<tt>.</p>
+
+<p>You can add several other kinds of fields by replacing SHORTSTRING with another field
+type, although you are free to just use SHORTSTRING for this lab (others are listed below).</p>
+
+<p>For Lab 5:  you need to add at least two fields to this form.  One should be to 
+capture the customer's name.  The other should be to describe the drink which
+the Barista needs to prepare.  These can both be of type <tt>SHORTSTRING</tt> as described
+above.</p>
+
+<p>Optionally you can add more fields and static labels and can even use different
+types of fields (numbers, dates, etc.).  This additional information is described
+below, but you do not need to read through it or add these additional features.</p>
+
+<h3>Additional Fields and Options</h3>
+
+<p>As noted above, adding additional types of fields or using these
+other options is not required for Lab 5, but you are welcome to experiment.
+Some additional options are available for all kinds of fields.  They are
+illustrated in the following line of code:</p>
+
+<p><tt>form.add_field(Type.SHORTSTRING, "FieldName", labeltext="Field Label", initial="default")</tt></p>
+
+<p>You can specify a label to use on the form for any field.  If you omit this parameter
+then the FieldName is used, but sometimes it is nice to have a more user friendly
+label on the form itself.  For example, if the field name is <tt>"CustomerName"</tt> you might
+want the label used to actually be "Customer Name" since that has a more familiar
+look than two words with no space between them.</p>
+
+<p>You can also specify an initial value to use for the field.  This default value
+will be used if the user does not change it.  Other types of fields (besides text) can be 
+added to a form by replacing <tt>SHORTSTRING</tt>
+with one of the following:
+
+<dl>
+<dt><tt>INTEGER</tt></dt>
+<dd>Will create a field that only allows integer values.</dd>
+
+<dt><tt>CURRENCY</tt></dt>
+<dd>Will create a field formatted for U.S. currency.  Internationalization is
+on our to do list.</dd>
+
+<dt><tt>DATE</tt></dt>
+<dd>Will add a date field.</dd>
+
+<dt><tt>BOOLEAN</tt></dt> 
+<dd>Will add a yes/no checkbox.  (Why 'Boolean' you may ask?  In honor of
+George Boole, a logician who made important contributions to logic and thus
+computer science.  Logic as in TRUE v. FALSE or YES v. NO, just like our checkbox.)</dd>
+
+<dt><tt>FLOAT</tt></dt> 
+<dd>Will add a number that includes a decimal point (a "floating point"
+number).  You can specify how many digits should be included after
+the decimal point by including the digits parameter as follows:
+<tt>form.add_field(Type.FLOAT, "FieldName", digits=4)</tt>
+The default number of digits (if you omit the digits parameter) is 2.
+Note also that the parameters with names (digits=, labeltext=, initial=) can be entered
+in any combination and any order.</dd>
+
+<dt><tt>LONGSTRING</tt></dt> 
+<dd>Is for longer text fields.  The principle difference is that WMP will create
+a multi-line text entry box for a LONGSTRING type field.</dd>
+
+<dt><tt>CHOICE</tt></dt>
+<dd>Will create a dropdown box listing a predefined set of options.  The options
+need to be specified in an additional named parameter using the following format:
+<tt>form.add_field(Type.CHOICE, "FieldName", choices=['first', 'second', 'third'])</tt>
+You can have as few or many choices as you want as long as choices are in quotes
+and separated by commas inside square brackets as in the above example.</dd>
+</dl>
+
+</body>
+</html>
